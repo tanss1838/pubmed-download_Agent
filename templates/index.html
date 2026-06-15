@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PubChem AI Literature Agent</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Abstract background blur spheres -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    
+    <div class="app-container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <i data-lucide="brain-circuit" class="logo-icon animate-pulse"></i>
+                <h1>PubChem <span>Agent</span></h1>
+            </div>
+            <p class="tagline">Automated Browser-Based Chemical Literature Search & Downloader</p>
+        </header>
+
+        <!-- Main Grid -->
+        <main class="main-grid">
+            <!-- Left Panel: Input & Console -->
+            <section class="left-panel">
+                <!-- Control Panel Card -->
+                <div class="glass-card control-card">
+                    <div class="card-header">
+                        <i data-lucide="sliders" class="header-icon"></i>
+                        <h2>Control Panel</h2>
+                    </div>
+                    
+                    <form id="search-form" class="search-form">
+                        <div class="input-group">
+                            <label for="keyword">Search Keyword</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="search" class="input-icon"></i>
+                                <input type="text" id="keyword" name="keyword" placeholder="e.g. thermoset, aspirin, graphene..." required value="thermoset">
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="count">Number of Papers to Download</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="file-down" class="input-icon"></i>
+                                <input type="number" id="count" name="count" min="1" max="100" value="3" required>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" id="submit-btn" class="glow-btn">
+                            <span class="btn-text">Start Research Agent</span>
+                            <i data-lucide="play" class="btn-icon"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Live Agent Console Card -->
+                <div class="glass-card console-card">
+                    <div class="card-header console-header">
+                        <div class="header-left">
+                            <i data-lucide="terminal" class="header-icon terminal-green"></i>
+                            <h2>Agent Console</h2>
+                        </div>
+                        <div class="terminal-dots">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                        </div>
+                    </div>
+                    
+                    <div id="console-output" class="console-body">
+                        <div class="console-line system-line">[00:00:00] Web Application Dashboard Loaded. Ready.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Live Stats & Results -->
+            <section class="right-panel">
+                <!-- Stats Dashboard Card -->
+                <div class="glass-card stats-card">
+                    <div class="card-header">
+                        <i data-lucide="bar-chart-3" class="header-icon"></i>
+                        <h2>Research Summary</h2>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <span class="stat-label">Total Downloaded</span>
+                            <span id="stat-total" class="stat-number">0</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Export Data</span>
+                            <div class="export-actions">
+                                <a href="/api/export/csv" class="export-btn" title="Export metadata.csv">
+                                    <i data-lucide="file-spreadsheet"></i> CSV
+                                </a>
+                                <a href="/api/export/json" class="export-btn" title="Export metadata.json">
+                                    <i data-lucide="file-json"></i> JSON
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Downloaded Library -->
+                <div class="glass-card library-card">
+                    <div class="card-header library-header">
+                        <div class="header-left">
+                            <i data-lucide="library" class="header-icon"></i>
+                            <h2>Downloaded Literature</h2>
+                        </div>
+                        <div class="search-library">
+                            <i data-lucide="filter" class="filter-icon"></i>
+                            <input type="text" id="library-filter" placeholder="Filter library...">
+                        </div>
+                    </div>
+                    
+                    <div id="library-list" class="library-grid">
+                        <div class="empty-library">
+                            <i data-lucide="inbox" class="empty-icon"></i>
+                            <p>No papers downloaded yet. Enter a keyword and start the agent!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Script imports -->
+    <script src="/static/app.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>

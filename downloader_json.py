@@ -1,23 +1,23 @@
 import os
 import time
-import random
+import json
 import requests
 import xml.etree.ElementTree as ET
 
 # ========================================================
-# ⚙️ MANAGER CONTROL PANEL (STRICT PUBMED ONLY)
+# ⚙️ MANAGER CONTROL PANEL (STRICT PUBMED TO JSON)
 # ========================================================
 KEYWORD = "thermoset"  # Swap this out for any keyword anytime
 COUNT = 3              # Keep it at 3 or 5 for your live presentation!
-OUTPUT_DIR = "./downloaded_papers"
+OUTPUT_DIR = "./downloaded_json_data"
 # ========================================================
 
 if not os.path.exists(OUTPUT_DIR):
     os.makedirs(OUTPUT_DIR)
 
-def get_pubmed_abstracts(keyword, limit):
+def get_pubmed_json_data(keyword, limit):
     print(f"=========================================================")
-    print(f"🤖 AGENT INITIALIZED: Strict PubMed Official API Pipeline")
+    print(f"🤖 AGENT INITIALIZED: Official PubMed JSON Data Pipeline")
     print(f"🔍 Keyword Target: '{keyword}' | Count Target: {limit}")
     print(f"=========================================================\n")
     
@@ -33,9 +33,9 @@ def get_pubmed_abstracts(keyword, limit):
             print("⚠️ No matching entries found on PubMed.")
             return
             
-        print(f"✅ Found {len(id_list)} valid IDs on PubMed. Downloading official text abstracts...\n")
+        print(f"✅ Found {len(id_list)} valid IDs. Fetching structured data streams...\n")
         
-        # Step 2: Use official efetch gateway to pull down full text summaries cleanly
+        # Step 2: Pull the full text summaries directly via the official XML gateway
         ids_joined = ",".join(id_list)
         fetch_url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id={ids_joined}&retmode=xml"
         
@@ -45,7 +45,6 @@ def get_pubmed_abstracts(keyword, limit):
             print(f"❌ Failed to fetch data stream from NCBI system.")
             return
             
-        # Parse the official XML data stream returned by the government server
         root = ET.fromstring(fetch_response.content)
         
         downloaded = 0
@@ -56,35 +55,39 @@ def get_pubmed_abstracts(keyword, limit):
             pmid = article.find('.//PMID').text
             title = article.find('.//ArticleTitle').text
             
-            # Extract Abstract text paragraphs
+            # Extract the Abstract text components
             abstract_elements = article.findall('.//AbstractText')
             abstract_text = " ".join([elem.text for elem in abstract_elements if elem.text])
             
             if not abstract_text:
                 abstract_text = "Abstract text not explicitly detailed in data stream summary."
             
-            # Clean title for saving
-            clean_title = "".join([c for c in title if c.isalpha() or c.isdigit() or c==' ']).rstrip()[:50]
-            
             print(f"--- Progress: {downloaded + 1}/{limit} ---")
-            print(f"📥 Storing Article ID: {pmid}...")
+            print(f"📥 Structuring JSON Object for ID: {pmid}...")
             
-            # Write a beautifully organized scientific report file
-            file_path = os.path.join(OUTPUT_DIR, f"PubMed_Abstract_{pmid}.txt")
-            with open(file_path, "w", encoding="utf-8") as f:
-                f.write(f"PUBMED ID: {pmid}\n")
-                f.write(f"TITLE: {title}\n")
-                f.write(f"=========================================================\n")
-                f.write(f"ABSTRACT:\n{abstract_text}\n")
+            # Create a clean, modern JSON data object
+            paper_json_object = {
+                "source": "PubMed",
+                "pubmed_id": pmid,
+                "title": title,
+                "search_keyword": keyword,
+                "abstract_summary": abstract_text
+            }
+            
+            # Save it to your hard drive as a beautifully formatted .json file
+            file_path = os.path.join(OUTPUT_DIR, f"PubMed_{pmid}.json")
+            with open(file_path, "w", encoding="utf-8") as json_file:
+                json.dump(paper_json_object, json_file, indent=4, ensure_ascii=False)
                 
-            print(f"✨ Successfully saved text profile: PubMed_Abstract_{pmid}.txt\n")
+            print(f"✨ Successfully saved data profile: PubMed_{pmid}.json\n")
             downloaded += 1
-            time.sleep(0.5)
+            time.sleep(0.3)
             
-        print(f"\n🎉 EXCLUSIVE TASK COMPLETE: Successfully saved {downloaded} raw PubMed records inside '{OUTPUT_DIR}'.")
+        print(f"\n🎉 EXCLUSIVE TASK COMPLETE: Successfully saved {downloaded} raw JSON objects inside '{OUTPUT_DIR}'.")
         
     except Exception as e:
         print(f"❌ Core PubMed API Connection Failure: {e}")
 
 if __name__ == "__main__":
-    get_pubmed_abstracts(KEYWORD, COUNT)
+    get_pubmed_json_data(KEYWORD, COUNT)
+    
